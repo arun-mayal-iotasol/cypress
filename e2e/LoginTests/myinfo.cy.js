@@ -9,10 +9,15 @@ import DashboardPage from "../../Pages/Dashboard/dashboardpage"
 describe('My info tests',()=>{
 
     before(()=>{
-        cy.visit("https://opensource-demo.orangehrmlive.com/");
-        LoginPage.login_with_valid_credentials()
-        DashboardPage.dashboard_element.dashboard_text_locator().should("have.text","Dashboard")
-        MenuTab.go_to_menu("My Info")
+            cy.intercept("https://opensource-demo.orangehrmlive.com/web/index.php/core/i18n/messages").as('wait_for_page')
+            cy.intercept("https://opensource-demo.orangehrmlive.com/web/images/ohrm_branding.png?1666596668857").as("wait_to_image")
+            cy.visit("https://opensource-demo.orangehrmlive.com/");
+            cy.wait(["@wait_for_page","@wait_to_image"],{requestTimeout:30000});
+            cy.get("img[alt='company-branding']",{ timeout: 10000 }).should("be.visible");
+            LoginPage.login_with_valid_credentials()
+            DashboardPage.dashboard_element.dashboard_text_locator().should("have.text","Dashboard")
+            MenuTab.go_to_menu("My Info")
+        
         
     })
 
